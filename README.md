@@ -1,6 +1,8 @@
 # Joque
 
-**TODO: Add description**
+[![Build Status](https://travis-ci.org/niku/joque.svg?branch=master)](https://travis-ci.org/niku/joque)
+
+A transactional job queue built with Elixir and Postgresql
 
 ## Installation
 
