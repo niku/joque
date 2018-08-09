@@ -9,7 +9,8 @@ defmodule Joque.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
-      package: package()
+      package: package(),
+      aliases: aliases()
     ]
   end
 
@@ -25,7 +26,9 @@ defmodule Joque.MixProject do
     [
       {:ex_doc, "~> 0.19.1", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc.3", only: :dev, runtime: false},
-      {:credo, "~> 0.10.0", only: :dev, runtime: false}
+      {:credo, "~> 0.10.0", only: :dev, runtime: false},
+      {:postgrex, ">= 0.0.0"},
+      {:ecto, "~> 2.2.10"}
     ]
   end
 
@@ -40,6 +43,12 @@ defmodule Joque.MixProject do
       links: %{
         "GitHub" => "https://github.com/niku/joque"
       }
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

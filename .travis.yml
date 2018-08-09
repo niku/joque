@@ -1,5 +1,7 @@
 language: elixir
 sudo: false
+services:
+  - postgresql
 otp_release:
   - 21.0
 elixir:
@@ -29,7 +31,8 @@ deploy:
   provider: script
   # http://yaml.org/spec/1.2/spec.html#id2779048
   # `>-` indicates the line folding.
-  # script: >-
+  script: >-
+    ehco "deployed"
   #   mix deps.get &&
   #   echo $HEX_LOCAL_PASSWORD | mix hex.publish --no-confirm &&
   #   mix clean &&
