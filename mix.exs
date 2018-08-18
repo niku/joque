@@ -28,7 +28,8 @@ defmodule Joque.MixProject do
       {:dialyxir, "~> 1.0.0-rc.3", only: :dev, runtime: false},
       {:credo, "~> 0.10.0", only: :dev, runtime: false},
       {:postgrex, ">= 0.0.0"},
-      {:ecto, "~> 2.2.10"}
+      {:ecto, "~> 2.2.10"},
+      {:jason, "~> 1.1.1"}
     ]
   end
 
