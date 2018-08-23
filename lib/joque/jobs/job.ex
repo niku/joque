@@ -1,4 +1,8 @@
 defmodule Joque.Jobs.Job do
+  @moduledoc """
+  A representation of job in jobs context.
+  """
+
   use Ecto.Schema
   @primary_key {:id, :binary_id, autogenerate: true}
 
