@@ -23,6 +23,8 @@ defmodule Joque do
     end
 
     defmodule module do
+      import Ecto.Query
+
       @job Module.concat(module, Job)
       @repo Keyword.get(opts, :repo)
 
@@ -44,12 +46,10 @@ defmodule Joque do
       end
 
       def remains do
-        import Ecto.Query
         from(j in @job, where: j.state == "AVAILABLE", order_by: j.inserted_at)
       end
 
       def completed do
-        import Ecto.Query
         from(j in @job, where: j.state == "COMPLETE", order_by: j.inserted_at)
       end
 
@@ -62,7 +62,6 @@ defmodule Joque do
 
       @doc false
       def get_job_records(_) do
-        import Ecto.Query
         records = @repo.all(from(j in @job, lock: "FOR UPDATE SKIP LOCKED"))
 
         if Enum.empty?(records) do
@@ -100,7 +99,6 @@ defmodule Joque do
 
       @doc false
       def update_all_job_records(%{joque_perform_jobs: completed_records}) do
-        import Ecto.Query
         completed_ids = Enum.map(completed_records, & &1.id)
         query = from(j in @job, where: j.id in ^completed_ids, update: [set: [state: "COMPLETE"]])
         {:ok, @repo.update_all(query, [])}
