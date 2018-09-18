@@ -53,11 +53,61 @@ defmodule Joque do
         from(j in @job, where: j.state == "COMPLETE", order_by: j.inserted_at)
       end
 
+      def perform(fun) do
+        Ecto.Multi.new()
+        |> Ecto.Multi.run(:joque_get_a_job_record, &get_a_job_record/1)
+        |> Ecto.Multi.run(:joque_perform_a_job, perform_a_job(fun))
+        |> Ecto.Multi.run(:joque_update_a_job_record, &update_a_job_record/1)
+      end
+
       def perform_all(fun) do
         Ecto.Multi.new()
         |> Ecto.Multi.run(:joque_get_job_records, &get_job_records/1)
         |> Ecto.Multi.run(:joque_perform_jobs, perform_jobs(fun))
         |> Ecto.Multi.run(:joque_update_all_job_records, &update_all_job_records/1)
+      end
+
+      @doc false
+      def get_a_job_record(_) do
+        records = @repo.one(from(j in @job, lock: "FOR UPDATE SKIP LOCKED"))
+
+        if is_nil(records) do
+          {:error, :no_jobs_found}
+        else
+          {:ok, records}
+        end
+      end
+
+      @doc false
+      def perform_a_job(fun) do
+        fn %{joque_get_a_job_record: a_job_record} ->
+          try do
+            case apply(fun, [a_job_record]) do
+              {:ok, result} ->
+                {:ok, result}
+
+              {:error, error} ->
+                {:error, error}
+
+              result ->
+                {:error, {:unexpected_value_returned, result}}
+            end
+          rescue
+            # To write assertion in the function which given perform_all as argument,
+            # it needs to reraise assertion error.
+            assertion_error in [ExUnit.AssertionError] ->
+              reraise(assertion_error, __STACKTRACE__)
+
+            error ->
+              {:error, {:error_occured, error}}
+          end
+        end
+      end
+
+      @doc false
+      def update_a_job_record(%{joque_get_a_job_record: a_record}) do
+        query = from(j in @job, where: j.id in [^a_record.id], update: [set: [state: "COMPLETE"]])
+        {:ok, @repo.update_all(query, [])}
       end
 
       @doc false

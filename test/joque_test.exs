@@ -37,6 +37,22 @@ defmodule JoqueTest do
     assert Joque.Repo.all(MyJobQueue.completed()) == []
   end
 
+  test "perform a job" do
+    Ecto.Multi.new()
+    |> MyJobQueue.enqueue(%{"type" => "foo"})
+    |> Joque.Repo.transaction()
+
+    MyJobQueue.perform(fn job ->
+      send(self(), job)
+      {:ok, job}
+    end)
+    |> Joque.Repo.transaction()
+
+    assert_received(job)
+    assert(Enum.empty?(Joque.Repo.all(MyJobQueue.remains())))
+    assert(Enum.count(Joque.Repo.all(MyJobQueue.completed())) == 1)
+  end
+
   describe "performs jobs" do
     test "when all jobs completed" do
       Ecto.Multi.new()
