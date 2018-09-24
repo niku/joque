@@ -10,7 +10,8 @@ defmodule Joque.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
-      aliases: aliases()
+      aliases: aliases(),
+      dialyzer: dialyzer()
     ]
   end
 
@@ -51,5 +52,9 @@ defmodule Joque.MixProject do
     [
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
+  end
+
+  defp dialyzer do
+    [plt_add_apps: [:mix]]
   end
 end

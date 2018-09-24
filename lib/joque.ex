@@ -9,12 +9,11 @@ defmodule Joque do
     defmodule Module.concat(module, Job) do
       use Ecto.Schema
       @table_name Keyword.get(opts, :table_name)
-      @primary_key {:id, :binary_id, autogenerate: true}
 
       schema @table_name do
         field(:params, :map)
         field(:state, :string)
-        timestamps(type: :utc_datetime)
+        timestamps()
       end
 
       def new(params) do
