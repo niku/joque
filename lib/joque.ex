@@ -13,6 +13,7 @@ defmodule Joque do
       schema @table_name do
         field(:params, :map)
         field(:state, :string)
+        field(:queued_at, :utc_datetime)
         timestamps()
       end
 
