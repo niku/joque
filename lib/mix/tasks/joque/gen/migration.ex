@@ -11,10 +11,10 @@ defmodule Mix.Tasks.Joque.Gen.Migration do
           add(:state, :string, null: false, default: "AVAILABLE", comment: "State of the job")
           add(:params, :map, null: false, default: %{}, comment: "Serialized job parameters")
           add(:queued_at, :utc_datetime, null: false, default: fragment("now()"), comment: "Queued datetime(UTC)")
-          timestamps()
+          timestamps(type: :utc_datetime)
         end
 
-        create index("jobs", [:queued_at])
+        create index("jobs", [:queued_at])\
     """
 
     Mix.Tasks.Ecto.Gen.Migration.run(["add_jobs_table", "--change", change | args])

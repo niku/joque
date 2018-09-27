@@ -14,7 +14,7 @@ defmodule Joque do
         field(:params, :map)
         field(:state, :string)
         field(:queued_at, :utc_datetime)
-        timestamps()
+        timestamps(type: :utc_datetime)
       end
 
       def new(params) do
@@ -34,11 +34,11 @@ defmodule Joque do
       end
 
       def enqueue_all(multi, params) when is_list(params) do
-        now = NaiveDateTime.utc_now()
+        now = DateTime.utc_now()
 
         records =
           Enum.map(params, fn p ->
-            %{params: p, inserted_at: now, updated_at: now}
+            %{params: p, queued_at: now, inserted_at: now, updated_at: now}
           end)
 
         multi

@@ -31,9 +31,9 @@ defmodule JoqueTest do
     assert a.state == "AVAILABLE"
     assert a.params == %{"type" => "foo"}
     assert b.params == %{"type" => "bar"}
-    assert a.inserted_at == a.updated_at
-    assert a.inserted_at == b.inserted_at
-    assert a.updated_at == b.updated_at
+    assert a.queued_at == a.inserted_at
+    assert a.queued_at == a.updated_at
+    assert a.queued_at == b.queued_at
     assert Joque.Repo.all(MyJobQueue.completed()) == []
   end
 
